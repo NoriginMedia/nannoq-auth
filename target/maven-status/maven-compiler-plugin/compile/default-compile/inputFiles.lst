@@ -1,0 +1,14 @@
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/models/UserProfile.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/models/AuthPackage.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/webhandlers/AuthHandler.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/services/package-info.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/services/VerificationService.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/models/VerifyResult.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/models/TokenContainer.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/webhandlers/ApiKeyHandler.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/utils/AuthPackageHandler.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/AuthGlobals.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/utils/Authorizer.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/services/AuthenticationService.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/AuthUtils.java
+/home/anders/repos/nannoq/tools/nannoq-auth/src/main/java/com/nannoq/tools/auth/models/package-info.java
