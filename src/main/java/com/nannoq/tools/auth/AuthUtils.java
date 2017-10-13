@@ -26,9 +26,6 @@ import io.vertx.serviceproxy.ServiceException;
 
 import java.util.function.Consumer;
 
-import static com.nannoq.tools.cluster.apis.APIManager.API.AUTH;
-import static com.nannoq.tools.cluster.apis.APIManager.API.AUTH_LOCAL;
-
 /**
  * File: AuthUtils
  * Project: data-api
@@ -50,6 +47,7 @@ public class AuthUtils {
 
     private static final String USER_NOT_VERIFIED = "NOT_VERIFIED";
 
+    private static final String AUTH_API_BASE = "/auth";
     private static final String AUTH_TOKEN_ENDPOINT = "/auth/api/oauth2/auth/convert";
     private static final String AUTH_VERIFY_ENDPOINT = "/auth/api/oauth2/verify";
 
@@ -211,7 +209,7 @@ public class AuthUtils {
                                 Handler<AsyncResult<AuthPackage>> resultHandler) {
         logger.debug("Running HTTP Auth Backup...");
 
-        ServiceManager.getInstance().consumeApi(external ? AUTH : AUTH_LOCAL, apiResult -> {
+        ServiceManager.getInstance().consumeApi(AUTH_API_BASE, apiResult -> {
             if (apiResult.failed()) {
                 logger.error("HTTP Backup unavailable...");
 
@@ -219,7 +217,7 @@ public class AuthUtils {
             } else {
                 String endpoint = AUTH_TOKEN_ENDPOINT + "/" + feedIdentifier;
 
-                apiManager.performRequestWithCircuitBreaker(external ? AUTH : AUTH_LOCAL, resultHandler, authFuture -> {
+                apiManager.performRequestWithCircuitBreaker(AUTH_API_BASE, resultHandler, authFuture -> {
                     HttpClientRequest req = apiResult.result().get(endpoint, httpClientResponse -> {
                         if (httpClientResponse.statusCode() == 401) {
                             logger.error("UNAUTHORIZED IN HTTP AUTH");
@@ -367,13 +365,13 @@ public class AuthUtils {
     private void httpVerifyBackUp(String jwt, String authTypeToken, Handler<AsyncResult<VerifyResult>> resultHandler) {
         logger.debug("Running HTTP Verify Backup...");
 
-        ServiceManager.getInstance().consumeApi(external ? AUTH : AUTH_LOCAL, apiResult -> {
+        ServiceManager.getInstance().consumeApi(AUTH_API_BASE, apiResult -> {
             if (apiResult.failed()) {
                 logger.error("HTTP Backup unavailable...");
 
                 resultHandler.handle(ServiceException.fail(502, "Service not available..."));
             } else {
-                apiManager.performRequestWithCircuitBreaker(external ? AUTH : AUTH_LOCAL, resultHandler, authFuture -> {
+                apiManager.performRequestWithCircuitBreaker(AUTH_API_BASE, resultHandler, authFuture -> {
                     HttpClientRequest req = apiResult.result().get(AUTH_VERIFY_ENDPOINT, httpClientResponse -> {
                         if (httpClientResponse.statusCode() == 200) {
                             httpClientResponse.bodyHandler(bodyResult -> {
