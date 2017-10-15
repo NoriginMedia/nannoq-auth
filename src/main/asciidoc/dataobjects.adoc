@@ -1,0 +1,74 @@
+= Cheatsheets
+
+[[AuthPackage]]
+== AuthPackage
+
+++++
+ Created by anders on 05/11/2016.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[feedId]]`feedId`|`String`|-
+|[[tokenContainer]]`tokenContainer`|`link:dataobjects.html#TokenContainer[TokenContainer]`|-
+|[[userProfile]]`userProfile`|`link:dataobjects.html#UserProfile[UserProfile]`|-
+|[[userType]]`userType`|`String`|-
+|===
+
+[[TokenContainer]]
+== TokenContainer
+
+++++
+ Created by anders on 19/09/16.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[accessToken]]`accessToken`|`String`|-
+|[[refreshToken]]`refreshToken`|`String`|-
+|===
+
+[[UserProfile]]
+== UserProfile
+
+++++
+ Created by anders on 20/09/16.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[email]]`email`|`String`|-
+|[[emailVerified]]`emailVerified`|`Boolean`|-
+|[[familyName]]`familyName`|`String`|-
+|[[givenName]]`givenName`|`String`|-
+|[[name]]`name`|`String`|-
+|[[pictureUrl]]`pictureUrl`|`String`|-
+|[[userId]]`userId`|`String`|-
+|===
+
+[[VerifyResult]]
+== VerifyResult
+
+++++
+ Created by anders on 04/01/2017.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[feedId]]`feedId`|`String`|-
+|[[id]]`id`|`String`|-
+|[[userType]]`userType`|`String`|-
+|===
+
