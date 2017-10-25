@@ -7,7 +7,7 @@
     <groupId>com.nannoq</groupId>
     <artifactId>auth</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.4</version>
+    <version>1.3.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +15,7 @@
         <vertx.version>3.5.0.Beta1</vertx.version>
         <hazelcast.version>3.8</hazelcast.version>
         <awssdk.version>1.11.93</awssdk.version>
-        <nannoq-version>1.3.4</nannoq-version>
+        <nannoq-version>1.3.5</nannoq-version>
     </properties>
     
     <name>Nannoq Auth</name>
