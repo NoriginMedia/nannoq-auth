@@ -13,13 +13,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.nannoq:repository:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.nannoq:repository:1.4.5" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-dynamodb-encryption-java:1.11.0" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-kms:1.11.15" level="project" />
     <orderEntry type="library" name="Maven: javax.cache:cache-api:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava-jdk5:17.0" level="project" />
-    <orderEntry type="library" name="Maven: com.nannoq:web:1.4.0" level="project" />
-    <orderEntry type="library" name="Maven: com.nannoq:cluster:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.nannoq:web:1.4.5" level="project" />
+    <orderEntry type="library" name="Maven: com.nannoq:cluster:1.4.5" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-core:3.5.0" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.15.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.15.Final" level="project" />

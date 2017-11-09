@@ -9,39 +9,23 @@ import io.vertx.core.json.JsonObject;
 @DataObject(generateConverter = true)
 public class VerifyResult {
     private String id;
-    private String userType;
-    private String feedId;
 
     public VerifyResult() {}
 
-    public VerifyResult(String id, String userType, String feedId) {
+    public VerifyResult(String id) {
         this.id = id;
-        this.userType = userType;
-        this.feedId = feedId;
     }
 
     public VerifyResult(JsonObject jsonObject) {
         this.id = jsonObject.getString("id");
-        this.userType = jsonObject.getString("userType");
-        this.feedId = jsonObject.getString("feedId");
     }
 
     public JsonObject toJson() {
         return new JsonObject()
-                .put("id", id)
-                .put("userType", userType)
-                .put("feedId", feedId);
+                .put("id", id);
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public String getFeedId() {
-        return feedId;
     }
 }

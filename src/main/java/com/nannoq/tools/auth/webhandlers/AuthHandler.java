@@ -2,6 +2,7 @@ package com.nannoq.tools.auth.webhandlers;
 
 import com.nannoq.tools.auth.AuthUtils;
 import com.nannoq.tools.auth.models.VerifyResult;
+import com.nannoq.tools.auth.utils.Authorization;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
@@ -11,6 +12,7 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.nannoq.tools.auth.AuthGlobals.GLOBAL_AUTHORIZATION;
 import static com.nannoq.tools.web.requestHandlers.RequestLogHandler.addLogMessageToRequestLog;
 
 /**
@@ -70,9 +72,12 @@ public class AuthHandler implements Handler<RoutingContext> {
                 HttpServerRequest request = routingContext.request();
                 String feedId = request.getParam("feedId");
                 if (feedId == null) feedId = request.getParam("hash");
-                String authTypeToken = request.rawMethod() + " " + TYPE.getSimpleName() + " " + feedId;
+                Authorization authorization = new Authorization();
+                authorization.setMethod(request.rawMethod());
+                authorization.setModel(TYPE.getSimpleName());
+                authorization.setDomainIdentifier(feedId == null ? GLOBAL_AUTHORIZATION : feedId);
 
-                authUtils.<VerifyResult>authenticateAndAuthorize(token, authTypeToken, result -> {
+                authUtils.<VerifyResult>authenticateAndAuthorize(token, authorization, result -> {
                     if (result.failed()) {
                         addLogMessageToRequestLog(routingContext, "Unauthorized!", result.cause());
 
@@ -80,7 +85,6 @@ public class AuthHandler implements Handler<RoutingContext> {
                     } else {
                         setAuthProcessTime(routingContext, processStartTime);
                         routingContext.put(AuthUtils.USER_IDENTIFIER, result.result().getId());
-                        routingContext.put(AuthUtils.USER_TYPE, result.result().getUserType());
                         routingContext.next();
                     }
                 });

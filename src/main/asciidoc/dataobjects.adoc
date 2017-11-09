@@ -12,10 +12,21 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[feedId]]`feedId`|`String`|-
 |[[tokenContainer]]`tokenContainer`|`link:dataobjects.html#TokenContainer[TokenContainer]`|-
 |[[userProfile]]`userProfile`|`link:dataobjects.html#UserProfile[UserProfile]`|-
-|[[userType]]`userType`|`String`|-
+|===
+
+[[Authorization]]
+== Authorization
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[domainIdentifier]]`domainIdentifier`|`String`|-
+|[[method]]`method`|`String`|-
+|[[model]]`model`|`String`|-
 |===
 
 [[TokenContainer]]
@@ -67,8 +78,6 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[feedId]]`feedId`|`String`|-
 |[[id]]`id`|`String`|-
-|[[userType]]`userType`|`String`|-
 |===
 

@@ -10,7 +10,7 @@ import io.vertx.core.Handler;
  */
 public interface Authorizer {
     boolean isAsync();
-    boolean authorize(Jws<Claims> claims, String domainIdentifier, String authorization) throws IllegalAccessException;
-    void authorize(Jws<Claims> claims, String domainIdentifier, String authorization, Handler<AsyncResult<Boolean>> resultHandler);
+    boolean authorize(Jws<Claims> claims, String domainIdentifier, Authorization authorization) throws IllegalAccessException;
+    void authorize(Jws<Claims> claims, String domainIdentifier, Authorization authorization, Handler<AsyncResult<Boolean>> resultHandler);
     void block(String domainIdentifier, String userId, Handler<AsyncResult<Boolean>> resultHandler);
 }

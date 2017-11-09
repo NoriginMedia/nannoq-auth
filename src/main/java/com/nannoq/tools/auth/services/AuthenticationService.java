@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 public interface AuthenticationService {
     @Fluent
     AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
-                                                @Nonnull String feedId, @Nullable String authOrigin,
                                                 @Nonnull Handler<AsyncResult<AuthPackage>> resultHandler);
 
     @Fluent

@@ -6,6 +6,7 @@ import com.nannoq.tools.auth.models.UserProfile;
 import com.nannoq.tools.auth.models.VerifyResult;
 import com.nannoq.tools.auth.services.AuthenticationService;
 import com.nannoq.tools.auth.services.VerificationService;
+import com.nannoq.tools.auth.utils.Authorization;
 import com.nannoq.tools.cluster.CircuitBreakerUtils;
 import com.nannoq.tools.cluster.apis.APIManager;
 import com.nannoq.tools.cluster.services.ServiceManager;
@@ -24,6 +25,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ServiceException;
 
+import java.util.Base64;
 import java.util.function.Consumer;
 
 /**
@@ -43,7 +45,6 @@ public class AuthUtils {
     private static final String AUTH_VERIFY_CIRCUTBREAKER_NAME = "com.auth.verify.circuitbreaker";
 
     public static final String USER_IDENTIFIER = "userId";
-    public static final String USER_TYPE = "userType";
 
     private static final String USER_NOT_VERIFIED = "NOT_VERIFIED";
 
@@ -132,8 +133,7 @@ public class AuthUtils {
     }
 
     @Fluent
-    public AuthUtils convertExternalToken(String token, String provider, String feedIdentifier, String authOrigin,
-                                          Handler<AsyncResult<AuthPackage>> resultHandler) {
+    public AuthUtils convertExternalToken(String token, String provider, Handler<AsyncResult<AuthPackage>> resultHandler) {
         logger.debug("Auth request ready for: " + provider);
 
         if (token == null) {
@@ -141,7 +141,7 @@ public class AuthUtils {
 
             resultHandler.handle(Future.failedFuture("Token cannot be null!"));
         } else {
-            Consumer<Throwable> backup = v -> httpAuthBackUp(token, provider, feedIdentifier, httpResult -> {
+            Consumer<Throwable> backup = v -> httpAuthBackUp(token, provider, httpResult -> {
                 logger.debug("Launching http backup...");
 
                 if (httpResult.failed()) {
@@ -155,7 +155,7 @@ public class AuthUtils {
                 logger.debug("Running Eventbus Auth...");
 
                 CircuitBreakerUtils.performRequestWithCircuitBreaker(authAuthCircuitBreaker, resultHandler, fut ->
-                        attemptAuthConversionOnEventBus(fut, service, token, provider, feedIdentifier, authOrigin),
+                        attemptAuthConversionOnEventBus(fut, service, token, provider),
                         backup);
             }, Future.future().setHandler(failure -> backup.accept(failure.cause())));
         }
@@ -181,9 +181,8 @@ public class AuthUtils {
 
     private void attemptAuthConversionOnEventBus(Future<AuthPackage> authFuture,
                                                  AuthenticationService authenticationService,
-                                                 String token, String provider, String feedIdentifier,
-                                                 String authOrigin) {
-        authenticationService.createJwtFromProvider(token, provider, feedIdentifier, authOrigin, conversionResult -> {
+                                                 String token, String provider) {
+        authenticationService.createJwtFromProvider(token, provider, conversionResult -> {
             if (authFuture.isComplete()) {
                 logger.error("Ignoring result, authFuture already completed: " + conversionResult.cause());
             } else {
@@ -205,7 +204,7 @@ public class AuthUtils {
         });
     }
 
-    private void httpAuthBackUp(String token, String provider, String feedIdentifier,
+    private void httpAuthBackUp(String token, String provider,
                                 Handler<AsyncResult<AuthPackage>> resultHandler) {
         logger.debug("Running HTTP Auth Backup...");
 
@@ -215,10 +214,8 @@ public class AuthUtils {
 
                 resultHandler.handle(ServiceException.fail(502, "Service not available..."));
             } else {
-                String endpoint = AUTH_TOKEN_ENDPOINT + "/" + feedIdentifier;
-
                 apiManager.performRequestWithCircuitBreaker(AUTH_API_BASE, resultHandler, authFuture -> {
-                    HttpClientRequest req = apiResult.result().get(endpoint, httpClientResponse -> {
+                    HttpClientRequest req = apiResult.result().get(AUTH_TOKEN_ENDPOINT, httpClientResponse -> {
                         if (httpClientResponse.statusCode() == 401) {
                             logger.error("UNAUTHORIZED IN HTTP AUTH");
 
@@ -237,9 +234,7 @@ public class AuthUtils {
                                 UserProfile userProfile = Json.decodeValue(
                                         jsonObjectBody.getJsonObject("userProfile").toString(), UserProfile.class);
 
-                                AuthPackage authPackage = new AuthPackage(
-                                        jsonObjectBody.getString("feedId"), jsonObjectBody.getString("userType"),
-                                        tokenContainer, userProfile);
+                                AuthPackage authPackage = new AuthPackage(tokenContainer, userProfile);
 
                                 authFuture.complete(authPackage);
 
@@ -263,16 +258,16 @@ public class AuthUtils {
 
     @Fluent
     @SuppressWarnings({"ThrowableResultOfMethodCallIgnored", "unchecked"})
-    public AuthUtils authenticateAndAuthorize(String jwt, String authTypeToken,
+    public AuthUtils authenticateAndAuthorize(String jwt, Authorization authorization,
                                               Handler<AsyncResult<VerifyResult>> resultHandler) {
-        logger.debug("Auth request ready: " + authTypeToken);
+        logger.debug("Auth request ready: " + authorization.toJson().encodePrettily());
 
         if (jwt == null) {
             logger.error("JWT cannot be null!");
 
             resultHandler.handle(Future.failedFuture("JWT cannot be null!"));
         } else {
-            Consumer<Throwable> backup = v -> httpVerifyBackUp(jwt, authTypeToken, httpResult -> {
+            Consumer<Throwable> backup = v -> httpVerifyBackUp(jwt, authorization, httpResult -> {
                 logger.debug("Received HTTP Verify Result: " + httpResult.succeeded());
 
                 if (httpResult.failed()) {
@@ -295,7 +290,7 @@ public class AuthUtils {
                                     resultHandler.handle(Future.succeededFuture(authRes.result()));
                                 }
                             }
-                        }, fut -> attemptAuthOnEventBus(fut, service, jwt, authTypeToken),
+                        }, fut -> attemptAuthOnEventBus(fut, service, jwt, authorization),
                         backup);
             }, Future.future().setHandler(failure -> backup.accept(failure.cause())));
         }
@@ -320,10 +315,10 @@ public class AuthUtils {
     }
 
     private void attemptAuthOnEventBus(Future<VerifyResult> authFuture, VerificationService verificationService,
-                                       String jwt, String authTypeToken) {
+                                       String jwt, Authorization authorization) {
         logger.debug("Running Auth on Eventbus, attempt: " + authVerifyCircuitBreaker.failureCount());
 
-        verificationService.verifyJWT(jwt, authTypeToken, verificationResult -> {
+        verificationService.verifyJWT(jwt, authorization, verificationResult -> {
             if (authFuture.isComplete()) {
                 logger.error("Ignoring result, authFuture already completed:" + verificationResult.cause());
             } else {
@@ -362,7 +357,8 @@ public class AuthUtils {
         });
     }
 
-    private void httpVerifyBackUp(String jwt, String authTypeToken, Handler<AsyncResult<VerifyResult>> resultHandler) {
+    private void httpVerifyBackUp(String jwt, Authorization authorization,
+                                  Handler<AsyncResult<VerifyResult>> resultHandler) {
         logger.debug("Running HTTP Verify Backup...");
 
         ServiceManager.getInstance().consumeApi(AUTH_API_BASE, apiResult -> {
@@ -395,7 +391,8 @@ public class AuthUtils {
                     });
 
                     req.putHeader("Authorization", "Bearer " + jwt);
-                    req.putHeader("X-Authorization-Type", authTypeToken);
+                    req.putHeader("X-Authorization-Type",
+                            new String(Base64.getEncoder().encode(authorization.toJson().encode().getBytes())));
                     req.setTimeout(5000L);
                     req.end();
                 }, e -> resultHandler.handle(Future.failedFuture(USER_NOT_VERIFIED)));

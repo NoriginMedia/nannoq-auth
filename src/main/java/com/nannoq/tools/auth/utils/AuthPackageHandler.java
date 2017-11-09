@@ -14,6 +14,5 @@ public interface AuthPackageHandler {
                            Handler<AsyncResult<JsonObject>> resultHandler);
 
     void processOAuthFlow(AuthPackage authPackage, String userId,
-                          String finalUrl, AuthGlobals.AUTH_ORIGIN authOrigin,
-                          Handler<AsyncResult<JsonObject>> resultHandler);
+                          String finalUrl, Handler<AsyncResult<JsonObject>> resultHandler);
 }
