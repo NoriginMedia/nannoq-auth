@@ -70,7 +70,7 @@ public class AuthHandler implements Handler<RoutingContext> {
                 }
 
                 HttpServerRequest request = routingContext.request();
-                String feedId = request.getParam("feedId");
+                String feedId = routingContext.pathParam("feedId");
                 if (feedId == null) feedId = request.getParam("hash");
                 Authorization authorization = new Authorization();
                 authorization.setMethod(request.rawMethod());
