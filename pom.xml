@@ -7,7 +7,7 @@
     <groupId>com.nannoq</groupId>
     <artifactId>auth</artifactId>
     <packaging>jar</packaging>
-    <version>1.4.7</version>
+    <version>1.4.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +15,7 @@
         <vertx.version>3.5.0</vertx.version>
         <hazelcast.version>3.8</hazelcast.version>
         <awssdk.version>1.11.93</awssdk.version>
-        <nannoq-version>1.4.7</nannoq-version>
+        <nannoq-version>1.4.8</nannoq-version>
     </properties>
     
     <name>Nannoq Auth</name>
@@ -329,6 +329,26 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+
+                <configuration>
+                    <show>private</show>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

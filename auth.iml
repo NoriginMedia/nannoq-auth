@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="JRUBY" name="JRuby">
+      <configuration>
+        <JRUBY_FACET_CONFIG_ID NAME="JRUBY_SDK_NAME" VALUE="" />
+        <LOAD_PATH number="0" />
+        <I18N_FOLDERS number="0" />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -13,13 +22,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.nannoq:repository:1.4.6" level="project" />
+    <orderEntry type="module" module-name="repository" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-dynamodb-encryption-java:1.11.0" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-kms:1.11.15" level="project" />
     <orderEntry type="library" name="Maven: javax.cache:cache-api:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava-jdk5:17.0" level="project" />
-    <orderEntry type="library" name="Maven: com.nannoq:web:1.4.6" level="project" />
-    <orderEntry type="library" name="Maven: com.nannoq:cluster:1.4.6" level="project" />
+    <orderEntry type="module" module-name="web" />
+    <orderEntry type="module" module-name="cluster" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-core:3.5.0" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.15.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.15.Final" level="project" />
