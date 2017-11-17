@@ -29,13 +29,10 @@ import java.util.Base64;
 import java.util.function.Consumer;
 
 /**
- * File: AuthUtils
- * Project: data-api
- * Package: com.noriginmedia.norigintube.api.service
- * <p>
- * This class
+ * This class is used for doing most auth options from a client perspective. It has evnetbus and http logic, with retry
+ * backups by circuitbreaker.
  *
- * @author anders
+ * @author Anders Mikkelsen
  * @version 3/3/16
  */
 public class AuthUtils {
@@ -59,13 +56,11 @@ public class AuthUtils {
     private MessageConsumer<JsonObject> verifyCircuitBreakerEvents;
 
     private final Vertx vertx;
-    private final boolean external;
     private final APIManager apiManager;
 
     private static AuthUtils instance = null;
 
-    private AuthUtils(boolean external) {
-        this.external = external;
+    private AuthUtils() {
         vertx = Vertx.currentContext().owner();
 
         logger.info("Initializing AuthUtils...");
@@ -84,16 +79,12 @@ public class AuthUtils {
         logger.info("AuthUtils initialized...");
     }
 
-    public static AuthUtils getInstance(boolean external) {
+    public static AuthUtils getInstance() {
         if (instance == null) {
-            instance = new AuthUtils(external);
+            instance = new AuthUtils();
         }
 
         return instance;
-    }
-
-    public static AuthUtils getInstance() {
-        return getInstance(false);
     }
 
     private void prepareCircuitBreakers() {

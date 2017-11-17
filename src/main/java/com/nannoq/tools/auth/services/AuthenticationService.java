@@ -9,7 +9,10 @@ import io.vertx.core.Handler;
 import javax.annotation.Nonnull;
 
 /**
- * Created by anders on 25/12/2016.
+ * This class defines the AuthenticationService interface. It is used for creating JWTS and refreshing them.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @ProxyGen
 @VertxGen

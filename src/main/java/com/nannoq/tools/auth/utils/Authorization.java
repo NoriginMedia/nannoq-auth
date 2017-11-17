@@ -7,6 +7,13 @@ import static com.nannoq.tools.auth.AuthGlobals.GLOBAL_AUTHORIZATION;
 import static com.nannoq.tools.auth.AuthGlobals.VALIDATION_REQUEST;
 import static com.nannoq.tools.auth.utils.AuthorizationConverter.fromJson;
 
+/**
+ * This class defines the object sent to the VerificationService to authorize a request. Currently support method based
+ * on models, with an optional domainIdentifier to authorize creators.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
+ */
 @DataObject(generateConverter = true)
 public class Authorization {
     private String model;

@@ -4,7 +4,10 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by anders on 19/09/16.
+ * This class defines a container for an accessToken (JWT) and a refreshToken.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @DataObject(generateConverter = true)
 public class TokenContainer {

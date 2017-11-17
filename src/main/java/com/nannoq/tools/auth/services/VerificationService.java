@@ -12,7 +12,11 @@ import io.vertx.core.Handler;
 import javax.annotation.Nonnull;
 
 /**
- * Created by anders on 24/12/2016.
+ * This class defines the VerificationService interface. It is used for verifying singular and all tokens, and revoking
+ * JWT's.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @ProxyGen
 @VertxGen

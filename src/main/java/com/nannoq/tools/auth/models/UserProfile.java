@@ -4,7 +4,10 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by anders on 20/09/16.
+ * This class defines a generic UserProfile with basic userinfo.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @DataObject(generateConverter = true)
 public class UserProfile {

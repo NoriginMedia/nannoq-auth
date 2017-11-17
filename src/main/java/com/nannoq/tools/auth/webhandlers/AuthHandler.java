@@ -4,7 +4,6 @@ import com.nannoq.tools.auth.AuthUtils;
 import com.nannoq.tools.auth.models.VerifyResult;
 import com.nannoq.tools.auth.utils.Authorization;
 import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -16,29 +15,27 @@ import static com.nannoq.tools.auth.AuthGlobals.GLOBAL_AUTHORIZATION;
 import static com.nannoq.tools.web.requestHandlers.RequestLogHandler.addLogMessageToRequestLog;
 
 /**
- * Created by anders on 02/08/16.
+ * This class defines an auth handler for verifying jwts. It builds a request based on the method of the original client
+ * request, and the model it is instantiated with. It accepts an optional domainIdentifier value.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 public class AuthHandler implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(AuthHandler.class.getSimpleName());
 
     public static final String AUTH_PROCESS_TIME = "X-Auth-Time-To-Process";
 
-    private final Vertx vertx;
     private final Class TYPE;
     private final AuthUtils authUtils;
     private final String apiKey;
-    private final boolean external;
+    private final String domainIdentifier;
 
-    public AuthHandler(Class type, Vertx vertx, String apiKey) {
-        this(type, vertx, apiKey, false);
-    }
-
-    public AuthHandler(Class type, Vertx vertx, String apiKey, boolean external) {
+    public AuthHandler(Class type, String domainIdentifier, String apiKey) {
         this.TYPE = type;
-        this.vertx = vertx;
+        this.domainIdentifier = domainIdentifier;
         this.apiKey = apiKey;
-        this.external = external;
-        authUtils = AuthUtils.getInstance(external);
+        authUtils = AuthUtils.getInstance();
     }
 
     @Override
@@ -70,7 +67,7 @@ public class AuthHandler implements Handler<RoutingContext> {
                 }
 
                 HttpServerRequest request = routingContext.request();
-                String feedId = routingContext.pathParam("feedId");
+                String feedId = routingContext.pathParam(domainIdentifier);
                 if (feedId == null) feedId = request.getParam("hash");
                 Authorization authorization = new Authorization();
                 authorization.setMethod(request.rawMethod());

@@ -6,7 +6,11 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 /**
- * Created by anders on 24/02/2017.
+ * This class defines the Authorizer interface. It can be used be a VerificationService implementation to call
+ * authorization logic.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 public interface Authorizer {
     boolean isAsync();

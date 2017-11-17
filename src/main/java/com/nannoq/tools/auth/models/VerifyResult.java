@@ -4,7 +4,10 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by anders on 04/01/2017.
+ * This class defines a result to verify requests, currently only returns id.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @DataObject(generateConverter = true)
 public class VerifyResult {

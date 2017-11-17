@@ -1,7 +1,12 @@
 package com.nannoq.tools.auth;
 
 /**
- * Created by anders on 24/02/2017.
+ * This class defines various globals for setting and extracting values. And the Global authorization value. The global
+ * authorization value is used for checking the validity of a JWT as well any information available for all users. It is
+ * applied as the domainIdentifier.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 public class AuthGlobals {
     public static final String VALID_JWT_REGISTRY_KEY = "_valid_jwt_registry";

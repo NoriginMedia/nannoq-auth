@@ -5,7 +5,10 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by anders on 05/11/2016.
+ * This class defines a container for a TokenContainer and a UserProfile
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 @DataObject(generateConverter = true)
 public class AuthPackage {

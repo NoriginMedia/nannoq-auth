@@ -4,7 +4,7 @@
 == AuthPackage
 
 ++++
- Created by anders on 05/11/2016.
+ This class defines a container for a TokenContainer and a UserProfile
 ++++
 '''
 
@@ -19,6 +19,11 @@
 [[Authorization]]
 == Authorization
 
+++++
+ This class defines the object sent to the VerificationService to authorize a request. Currently support method based
+ on models, with an optional domainIdentifier to authorize creators.
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -33,7 +38,7 @@
 == TokenContainer
 
 ++++
- Created by anders on 19/09/16.
+ This class defines a container for an accessToken (JWT) and a refreshToken.
 ++++
 '''
 
@@ -49,7 +54,7 @@
 == UserProfile
 
 ++++
- Created by anders on 20/09/16.
+ This class defines a generic UserProfile with basic userinfo.
 ++++
 '''
 
@@ -70,7 +75,7 @@
 == VerifyResult
 
 ++++
- Created by anders on 04/01/2017.
+ This class defines a result to verify requests, currently only returns id.
 ++++
 '''
 

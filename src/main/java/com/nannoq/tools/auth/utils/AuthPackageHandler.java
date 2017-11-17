@@ -1,13 +1,16 @@
 package com.nannoq.tools.auth.utils;
 
-import com.nannoq.tools.auth.AuthGlobals;
 import com.nannoq.tools.auth.models.AuthPackage;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Created by anders on 24/02/2017.
+ * This class describes the AuthPackageHandler Interface, it can be used by the AuthenticationService implementation to
+ * separate oauth flow and direct convert authentications strategies.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 public interface AuthPackageHandler {
     void processDirectAuth(AuthPackage authPackage, String userId,

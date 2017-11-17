@@ -4,7 +4,10 @@ import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
 /**
- * Created by anders on 02/08/16.
+ * This class defines an auth handler for verifying against static API keys.
+ *
+ * @author Anders Mikkelsen
+ * @version 17.11.2017
  */
 public class ApiKeyHandler implements Handler<RoutingContext> {
     private final String apiKey;
