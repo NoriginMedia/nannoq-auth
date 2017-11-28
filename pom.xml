@@ -6,7 +6,7 @@
 
     <groupId>com.nannoq</groupId>
     <artifactId>auth</artifactId>
-    <version>1.5.7</version>
+    <version>1.6.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <hazelcast.version>3.8.2</hazelcast.version>
         <hazelcast.version>3.8</hazelcast.version>
         <awssdk.version>1.11.93</awssdk.version>
-        <nannoq-version>1.5.7</nannoq-version>
+        <nannoq-version>1.6.0</nannoq-version>
     </properties>
 
     <dependencies>
