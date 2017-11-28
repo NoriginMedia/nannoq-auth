@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.nannoq</groupId>
+    <parent>
+        <groupId>com.nannoq</groupId>
+        <artifactId>tools</artifactId>
+        <version>1.6.0</version>
+    </parent>
+
     <artifactId>auth</artifactId>
-    <version>1.6.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -42,7 +46,11 @@
         <hazelcast.version>3.8.2</hazelcast.version>
         <hazelcast.version>3.8</hazelcast.version>
         <awssdk.version>1.11.93</awssdk.version>
-        <nannoq-version>1.6.0</nannoq-version>
+        <nannoq.version>${project.version}</nannoq.version>
+        <maven.sources.version>3.0.1</maven.sources.version>
+        <maven.javadoc.version>3.0.0-M1</maven.javadoc.version>
+        <maven.compiler.version>3.7.0</maven.compiler.version>
+        <maven.gpg.version>1.6</maven.gpg.version>
     </properties>
 
     <dependencies>
@@ -51,19 +59,19 @@
         <dependency>
             <groupId>com.nannoq</groupId>
             <artifactId>repository</artifactId>
-            <version>${nannoq-version}</version>
+            <version>${nannoq.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.nannoq</groupId>
             <artifactId>web</artifactId>
-            <version>${nannoq-version}</version>
+            <version>${nannoq.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.nannoq</groupId>
             <artifactId>cluster</artifactId>
-            <version>${nannoq-version}</version>
+            <version>${nannoq.version}</version>
         </dependency>
 
         <!-- Nannoq Dependencies -->
@@ -270,6 +278,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.sources.version}</version>
 
                 <executions>
                     <execution>
@@ -284,6 +293,7 @@
 
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
 
                 <executions>
                     <execution>
@@ -298,6 +308,7 @@
 
             <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven.gpg.version}</version>
 
                 <executions>
                     <execution>
@@ -313,6 +324,7 @@
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
 
                 <configuration>
                     <source>1.8</source>
@@ -345,6 +357,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
 
                 <configuration>
                     <show>private</show>
