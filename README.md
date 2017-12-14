@@ -1,6 +1,6 @@
 # Nannoq Auth
 
-nannoq-auth is a collection of classes for managing JWT's on a vertx environment.
+nannoq-auth is a collection of classes for managing JWT based authentication and authorization on a vertx environment.
 
 ### Prerequisites
 
@@ -26,7 +26,7 @@ mvn clean verify -Dgpg.skip=true
 
 First install with either Maven:
 
-```
+```xml
 <dependency>
     <groupId>com.nannoq</groupId>
     <artifactId>auth</artifactId>
@@ -36,11 +36,15 @@ First install with either Maven:
 
 or Gradle:
 
-```
+```groovy
 dependencies {
     compile group: 'nannoq.com:auth:1.0.0'
 }
 ```
+
+### Implementation and Use
+
+Please consult the [Wiki](https://github.com/mikand13/nannoq-auth/wiki) for guides on implementations and use.
 
 ## Contributing
 
