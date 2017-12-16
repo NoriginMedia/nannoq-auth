@@ -15,7 +15,7 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A collection of classes for managing JWT signing and verification on Vert.x</description>
-    <url>https://github.com/AspiroTV/nannoq-auth</url>
+    <url>https://github.com/NoriginMedia/nannoq-auth</url>
 
     <licenses>
         <license>
@@ -34,9 +34,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/AspiroTV/nannoq-auth.git</connection>
-        <developerConnection>scm:git:ssh://github.com:AspiroTV/nannoq-auth.git</developerConnection>
-        <url>https://github.com/mikand13/nannoq-auth/tree/master</url>
+        <connection>scm:git:git://github.com/NoriginMedia/nannoq-auth.git</connection>
+        <developerConnection>scm:git:ssh://github.com:NoriginMedia/nannoq-auth.git</developerConnection>
+        <url>https://github.com/NoriginMedia/nannoq-auth/tree/master</url>
     </scm>
 
     <properties>

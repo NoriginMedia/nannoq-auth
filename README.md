@@ -44,22 +44,22 @@ dependencies {
 
 ### Implementation and Use
 
-Please consult the [Wiki](https://github.com/mikand13/nannoq-auth/wiki) for guides on implementations and use.
+Please consult the [Wiki](https://github.com/NoriginMedia/nannoq-auth/wiki) for guides on implementations and use.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/mikand13/nannoq-auth/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/NoriginMedia/nannoq-auth/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/mikand13/nannoq-auth/tags)
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/NoriginMedia/nannoq-auth/tags)
 
 ## Authors
 
 * **Anders Mikkelsen** - *Initial work* - [Norigin Media](http://noriginmedia.com/)
 
-See also the list of [contributors](https://github.com/mikand13/nannoq-auth/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/NoriginMedia/nannoq-auth/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/mikand13/nannoq-auth/blob/master/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/NoriginMedia/nannoq-auth/blob/master/LICENSE) file for details
