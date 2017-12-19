@@ -26,6 +26,7 @@
 package com.nannoq.tools.auth.utils;
 
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.codegen.annotations.Fluent;
 import io.vertx.core.json.JsonObject;
 
 import static com.nannoq.tools.auth.AuthGlobals.GLOBAL_AUTHORIZATION;
@@ -65,23 +66,36 @@ public class Authorization {
         return model;
     }
 
-    public void setModel(String model) {
+    @Fluent
+    public Authorization setModel(String model) {
         this.model = model;
+
+        return this;
     }
 
     public String getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    @Fluent
+    public Authorization setMethod(String method) {
         this.method = method;
+
+        return this;
     }
 
     public String getDomainIdentifier() {
         return domainIdentifier;
     }
 
-    public void setDomainIdentifier(String domainIdentifier) {
+    @Fluent
+    public Authorization setDomainIdentifier(String domainIdentifier) {
         this.domainIdentifier = domainIdentifier;
+
+        return this;
+    }
+
+    public static Authorization global() {
+        return new Authorization().setDomainIdentifier(VALIDATION_REQUEST);
     }
 }

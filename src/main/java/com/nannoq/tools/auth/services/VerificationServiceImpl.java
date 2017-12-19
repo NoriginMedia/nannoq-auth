@@ -183,6 +183,7 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Fluent
+    @Override
     public VerificationServiceImpl verifyToken(String token, Handler<AsyncResult<Jws<Claims>>> resultHandler) {
         vertx.executeBlocking(verificationFuture -> {
             try {
@@ -259,6 +260,7 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     @Fluent
+    @Override
     public VerificationServiceImpl verifyAuthorization(Jws<Claims> claims, Authorization authorization,
                                                        Handler<AsyncResult<Boolean>> resultHandler)
             throws IllegalAccessException {

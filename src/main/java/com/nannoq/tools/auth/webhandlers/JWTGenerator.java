@@ -27,16 +27,17 @@ package com.nannoq.tools.auth.webhandlers;
 import com.nannoq.tools.auth.models.AuthPackage;
 import com.nannoq.tools.auth.models.TokenContainer;
 import com.nannoq.tools.auth.services.AuthenticationService;
-import com.nannoq.tools.auth.services.AuthenticationServiceImpl;
 import com.nannoq.tools.auth.utils.AuthPackageHandler;
 import com.nannoq.tools.cluster.apis.APIManager;
 import com.nannoq.tools.cluster.services.ServiceManager;
+import com.nannoq.tools.repository.models.ModelUtils;
 import com.nannoq.tools.repository.repository.redis.RedisUtils;
 import facebook4j.Facebook;
 import facebook4j.FacebookException;
 import facebook4j.FacebookFactory;
 import facebook4j.auth.AccessToken;
 import facebook4j.conf.ConfigurationBuilder;
+import io.vertx.codegen.annotations.Fluent;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -59,6 +60,7 @@ import org.jsoup.safety.Whitelist;
 import javax.annotation.Nonnull;
 import java.security.NoSuchAlgorithmException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.nannoq.tools.auth.services.AuthenticationServiceImpl.*;
 import static com.nannoq.tools.auth.utils.AuthFutures.*;
@@ -84,12 +86,14 @@ public class JWTGenerator implements Handler<RoutingContext> {
     private final JsonObject appConfig;
     private final String domainIdentifier;
     private final RedisClient redisClient;
-    private final AuthenticationServiceImpl authenticator;
+    private final AuthenticationService authenticator;
     private final AuthPackageHandler authPackageHandler;
     private final String callbackUrl;
+    private final String EMAIL_HASH_KEY_BASE;
+    private Function<AuthPackage, String> userIdFunction;
 
     public JWTGenerator(@Nonnull Vertx vertx, @Nonnull JsonObject appConfig,
-                        @Nonnull AuthenticationServiceImpl authenticator,
+                        @Nonnull AuthenticationService authenticator,
                         @Nonnull AuthPackageHandler authPackageHandler,
                         @Nonnull String domainIdentifier) {
         this.vertx = vertx;
@@ -123,6 +127,30 @@ public class JWTGenerator implements Handler<RoutingContext> {
                 "prompt=consent&" +
                 "include_granted_scopes=true&" +
                 "access_type=online";
+
+        this.EMAIL_HASH_KEY_BASE = appConfig.getString("emailHashKeybase");
+
+        userIdFunction = authPackage -> {
+            try {
+                return ModelUtils.hashString(authPackage.getUserProfile().getEmail() + EMAIL_HASH_KEY_BASE);
+            } catch (NoSuchAlgorithmException e) {
+                logger.error("No Algorithm Available!", e);
+
+                return authPackage.getUserProfile().getEmail();
+            }
+        };
+    }
+
+    @Fluent
+    public AuthenticationService withUserIdGenerator(Function<AuthPackage, String> userIdGenerator) {
+        return setUserIdFunction(userIdGenerator);
+    }
+
+    @Fluent
+    public AuthenticationService setUserIdFunction(Function<AuthPackage, String> userIdFunction) {
+        this.userIdFunction = userIdFunction;
+
+        return authenticator;
     }
 
     @Override
@@ -268,7 +296,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
                     AuthPackage authPackage = result.result();
 
                     try {
-                        String userId = authenticator.buildUserId(authPackage);
+                        String userId = userIdFunction.apply(authPackage);
 
                         authPackageHandler.processDirectAuth(authPackage, userId, authPackageProcessResult -> {
                             if (authPackageProcessResult.failed()) {
@@ -395,7 +423,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
 
         logger.debug("Url is: " + finalUrl);
 
-        String userId = authenticator.buildUserId(authPackage);
+        String userId = userIdFunction.apply(authPackage);
 
         authPackageHandler.processOAuthFlow(authPackage, userId, finalUrl, authPackageProcessResult -> {
             if (authPackageProcessResult.failed()) {

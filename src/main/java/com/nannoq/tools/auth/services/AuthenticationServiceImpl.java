@@ -199,10 +199,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         mac.init(SIGNING_KEY);
     }
 
-    public String buildUserId(AuthPackage authPackage) {
-        return userIdFunction.apply(authPackage);
-    }
-
     @Override
     @Fluent
     public AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
