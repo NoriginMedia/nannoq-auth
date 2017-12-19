@@ -27,12 +27,13 @@ package com.nannoq.tools.auth.services;
 
 import com.nannoq.tools.auth.models.AuthPackage;
 import com.nannoq.tools.auth.models.TokenContainer;
-import io.vertx.codegen.annotations.Fluent;
-import io.vertx.codegen.annotations.ProxyClose;
-import io.vertx.codegen.annotations.ProxyGen;
-import io.vertx.codegen.annotations.VertxGen;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.vertx.codegen.annotations.*;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nonnull;
 
@@ -52,6 +53,15 @@ public interface AuthenticationService {
     @Fluent
     AuthenticationService refresh(@Nonnull String refreshToken,
                                   @Nonnull Handler<AsyncResult<TokenContainer>> resultHandler);
+
+    @Fluent
+    @GenIgnore
+    default AuthenticationService switchToAssociatedDomain(String domainId, Jws<Claims> verifyResult,
+                                                           Handler<AsyncResult<TokenContainer>> resultHandler) {
+        resultHandler.handle(Future.failedFuture(new NotImplementedException()));
+
+        return this;
+    }
 
     @ProxyClose
     void close();

@@ -54,6 +54,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.annotation.Nonnull;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -80,7 +82,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final String EMAIL_HASH_KEY_BASE;
 
     public static final String GOOGLE = "GOOGLE";
-    public static final String YOUTUBE = "YOUTUBE";
     public static final String FACEBOOK = "FACEBOOK";
     public static final String INSTAGRAM = "INSTAGRAM";
 
@@ -101,18 +102,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private int refreshTokenExpirationInDays = 30;
 
     private Function<PermissionPack, Map<String, Object>> setPermissionOnClaims;
-    private Function<AuthPackage, String> userIdFunction;
 
     public AuthenticationServiceImpl(@Nonnull Vertx vertx, @Nonnull JsonObject appConfig,
                                      @Nonnull Function<PermissionPack, Map<String, Object>> permissionFunction,
-                                     @Nonnull SecretKey SIGNING_KEY)
+                                     @Nonnull String KEY_BASE)
             throws InvalidKeyException, NoSuchAlgorithmException {
         this.vertx = vertx;
         this.appConfig = appConfig;
         this.redisClient = RedisUtils.getRedisClient(vertx, appConfig);
         this.domainIdentifier = appConfig.getString("domainIdentifier");
         this.setPermissionOnClaims = permissionFunction;
-        this.SIGNING_KEY = SIGNING_KEY;
+        this.SIGNING_KEY = new SecretKeySpec(DatatypeConverter.parseHexBinary(KEY_BASE), KEY_ALGORITHM);
         //noinspection unchecked
         this.GOOGLE_CLIENT_IDS = appConfig.getJsonArray("gcmIds").getList();
         this.EMAIL_HASH_KEY_BASE = appConfig.getString("emailHashKeybase");
@@ -120,16 +120,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.CALLBACK_URL = appConfig.getString("callBackRoot") + CALL_BACK_PROVIDER_URL;
         this.ISSUER = appConfig.getString("authJWTIssuer");
         this.AUDIENCE = appConfig.getString("authJWTAudience");
-
-        userIdFunction = authPackage -> {
-            try {
-                return ModelUtils.hashString(authPackage.getUserProfile().getEmail() + EMAIL_HASH_KEY_BASE);
-            } catch (NoSuchAlgorithmException e) {
-                logger.error("No Algorithm Available!", e);
-
-                return authPackage.getUserProfile().getEmail();
-            }
-        };
 
         initializeKey(KEY_ALGORITHM);
     }
@@ -163,13 +153,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Fluent
-    private AuthenticationServiceImpl setUserIdFunction(Function<AuthPackage, String> userIdFunction) {
-        this.userIdFunction = userIdFunction;
-
-        return this;
-    }
-
-    @Fluent
     public AuthenticationServiceImpl withNotBeforeTimeInMinutes(int notBeforeTime) {
         return setNotBeforeTimeInMinutes(notBeforeTime);
     }
@@ -187,11 +170,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Fluent
     public AuthenticationServiceImpl withKeyAlgorithm(String keyAlgorithm) {
         return setKeyAlgorithm(keyAlgorithm);
-    }
-
-    @Fluent
-    public AuthenticationServiceImpl withUserIdGenerator(Function<AuthPackage, String> userIdGenerator) {
-        return setUserIdFunction(userIdGenerator);
     }
 
     private void initializeKey(String keyAlgorithm) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -544,11 +522,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return tokenCacheFuture;
     }
 
-    public void switchToAssociatedDomain(String domainId, Jws<Claims> verifyResult,
-                                         Handler<AsyncResult<TokenContainer>> resultHandler) {
+    @Fluent
+    @Override
+    public AuthenticationService switchToAssociatedDomain(String domainId, Jws<Claims> verifyResult,
+                                                          Handler<AsyncResult<TokenContainer>> resultHandler) {
         verifyResult.getBody().put(domainIdentifier, domainId);
 
         createTokenContainer(verifyResult, resultHandler);
+
+        return this;
     }
 
     private void createTokenContainer(Jws<Claims> claims, Handler<AsyncResult<TokenContainer>> resultHandler) {

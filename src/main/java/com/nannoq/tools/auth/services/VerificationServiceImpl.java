@@ -184,7 +184,7 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Fluent
     @Override
-    public VerificationServiceImpl verifyToken(String token, Handler<AsyncResult<Jws<Claims>>> resultHandler) {
+    public VerificationServiceImpl verifyToken(@Nonnull String token, Handler<AsyncResult<Jws<Claims>>> resultHandler) {
         vertx.executeBlocking(verificationFuture -> {
             try {
                 logger.debug("Verifying Token...");
@@ -299,7 +299,8 @@ public class VerificationServiceImpl implements VerificationService {
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    @Fluent
+    @Override
     public VerificationService revokeUser(@Nonnull String userId,
                                           @Nonnull Handler<AsyncResult<Boolean>> resultHandler) {
         final String registry = userId + VALID_JWT_REGISTRY_KEY;
