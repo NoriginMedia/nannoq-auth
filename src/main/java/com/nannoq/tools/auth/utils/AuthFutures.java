@@ -25,7 +25,6 @@
 package com.nannoq.tools.auth.utils;
 
 import com.nannoq.tools.auth.services.VerificationService;
-import com.nannoq.tools.auth.services.VerificationServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.vertx.core.AsyncResult;
@@ -67,7 +66,7 @@ public class AuthFutures {
         return tokenFuture;
     }
 
-    public static Future<Jws<Claims>> verifyToken(VerificationServiceImpl verifier, String token) {
+    public static Future<Jws<Claims>> verifyToken(VerificationService verifier, String token) {
         Future<Jws<Claims>> claimsFuture = Future.future();
 
         verifier.verifyToken(token, resultHandler -> {

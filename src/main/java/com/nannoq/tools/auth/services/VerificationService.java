@@ -31,7 +31,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.vertx.codegen.annotations.*;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nonnull;
 
@@ -54,6 +56,24 @@ public interface VerificationService {
     
     @Fluent
     VerificationService verifyJWTValidity(@Nonnull Handler<AsyncResult<Boolean>> resultHandler);
+
+    @Fluent
+    @GenIgnore
+    default VerificationService verifyToken(@Nonnull String token, Handler<AsyncResult<Jws<Claims>>> resultHandler) {
+        resultHandler.handle(Future.failedFuture(new NotImplementedException()));
+
+        return this;
+    }
+
+    @Fluent
+    @GenIgnore
+    default VerificationService verifyAuthorization(Jws<Claims> claims, Authorization authorization,
+                                                    Handler<AsyncResult<Boolean>> resultHandler)
+            throws IllegalAccessException {
+        resultHandler.handle(Future.failedFuture(new NotImplementedException()));
+
+        return this;
+    }
 
     @ProxyClose
     void close();

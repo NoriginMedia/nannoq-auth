@@ -25,7 +25,7 @@
 package com.nannoq.tools.auth.webhandlers;
 
 import com.nannoq.tools.auth.models.VerifyResult;
-import com.nannoq.tools.auth.services.VerificationServiceImpl;
+import com.nannoq.tools.auth.services.VerificationService;
 import com.nannoq.tools.auth.utils.Authorization;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -43,9 +43,7 @@ import java.util.Base64;
 import java.util.function.Consumer;
 
 import static com.nannoq.tools.auth.AuthGlobals.VALIDATION_REQUEST;
-import static com.nannoq.tools.auth.utils.AuthFutures.authFail;
-import static com.nannoq.tools.auth.utils.AuthFutures.getToken;
-import static com.nannoq.tools.auth.utils.AuthFutures.verifyToken;
+import static com.nannoq.tools.auth.utils.AuthFutures.*;
 import static com.nannoq.tools.web.responsehandlers.ResponseLogHandler.BODY_CONTENT_TAG;
 
 /**
@@ -58,10 +56,10 @@ import static com.nannoq.tools.web.responsehandlers.ResponseLogHandler.BODY_CONT
 public class JWTReceiver implements Handler<RoutingContext> {
     private static final Logger logger = LoggerFactory.getLogger(JWTReceiver.class.getSimpleName());
 
-    private final VerificationServiceImpl verifier;
+    private final VerificationService verifier;
     private final String AUTHORIZATION_TYPE_HEADER;
 
-    public JWTReceiver(VerificationServiceImpl verifier, String AUTHORIZATION_TYPE_HEADER) {
+    public JWTReceiver(VerificationService verifier, String AUTHORIZATION_TYPE_HEADER) {
         this.verifier = verifier;
 
         if (AUTHORIZATION_TYPE_HEADER == null) {
