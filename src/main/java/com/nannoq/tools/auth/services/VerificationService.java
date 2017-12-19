@@ -37,6 +37,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nonnull;
 
+import static com.nannoq.tools.auth.AuthGlobals.VALID_JWT_REGISTRY_KEY;
+
 /**
  * This class defines the VerificationService interface. It is used for verifying singular and all tokens, and revoking
  * JWT's.
@@ -56,6 +58,9 @@ public interface VerificationService {
     
     @Fluent
     VerificationService verifyJWTValidity(@Nonnull Handler<AsyncResult<Boolean>> resultHandler);
+
+    @Fluent
+    VerificationService revokeUser(@Nonnull String userId, @Nonnull Handler<AsyncResult<Boolean>> resultHandler);
 
     @Fluent
     @GenIgnore

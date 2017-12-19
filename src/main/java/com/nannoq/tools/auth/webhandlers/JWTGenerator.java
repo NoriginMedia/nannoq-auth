@@ -78,14 +78,13 @@ import static com.nannoq.tools.web.responsehandlers.ResponseLogHandler.BODY_CONT
 public class JWTGenerator implements Handler<RoutingContext> {
     private final Logger logger = LoggerFactory.getLogger(JWTGenerator.class.getSimpleName());
 
-    private final String CMS_ROOT;
+    protected final String CMS_ROOT;
     private final String GOOGLE_AUTH_URL;
-    private final String YOUTUBE_AUTH_URL;
 
-    private final Vertx vertx;
-    private final JsonObject appConfig;
-    private final String domainIdentifier;
-    private final RedisClient redisClient;
+    protected final Vertx vertx;
+    protected final JsonObject appConfig;
+    protected final String domainIdentifier;
+    protected final RedisClient redisClient;
     private final AuthenticationService authenticator;
     private final AuthPackageHandler authPackageHandler;
     private final String callbackUrl;
@@ -117,16 +116,6 @@ public class JWTGenerator implements Handler<RoutingContext> {
                 "prompt=consent&" +
                 "include_granted_scopes=true&" +
                 "access_type=offline";
-
-        YOUTUBE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth?" +
-                "scope=https://www.googleapis.com/auth/youtube.readonly&" +
-                "state=:stateToken&" +
-                "redirect_uri=" + CMS_ROOT + "/auth/api/oauth2/auth/verification/providers/youtube&" +
-                "response_type=code&" +
-                "client_id=" + googleClientId + "&" +
-                "prompt=consent&" +
-                "include_granted_scopes=true&" +
-                "access_type=online";
 
         this.EMAIL_HASH_KEY_BASE = appConfig.getString("emailHashKeybase");
 
@@ -384,7 +373,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         }
     }
 
-    private Future<String> getLocation(String state) {
+    protected Future<String> getLocation(String state) {
         Future<String> stateFuture = Future.future();
 
         RedisUtils.performJedisWithRetry(redisClient, intRedis -> intRedis.get(state, getResult -> {
@@ -461,28 +450,6 @@ public class JWTGenerator implements Handler<RoutingContext> {
                 denyRequest(routingContext));
     }
 
-    public void returnProviderVerificationUrl(RoutingContext routingContext) {
-        String feedId = routingContext.request().getParam("feedId");
-
-        Consumer<String> success = location -> routingContext.response()
-                .setStatusCode(302)
-                .putHeader(HttpHeaders.LOCATION, location)
-                .end();
-
-        getProvider(routingContext).compose(provider ->
-        getProviderId(routingContext).compose(providerId ->
-        getUserState(routingContext).compose(state ->
-        getLocation(routingContext, state).compose(location ->
-        setState(state, location).compose(v ->
-        constructVerificationUrl(state, location, feedId, provider, providerId).compose(success::accept,
-                authFailRedirect(routingContext)),
-                authFailRedirect(routingContext)),
-                authFailRedirect(routingContext)),
-                denyRequest(routingContext)),
-                denyRequest(routingContext)),
-                denyRequest(routingContext));
-    }
-
     private Future<String> constructAuthUrl(RoutingContext routingContext, String state,
                                             String location, String provider) {
         Future<String> locationFuture = Future.future();
@@ -543,65 +510,6 @@ public class JWTGenerator implements Handler<RoutingContext> {
         return locationFuture;
     }
 
-    private Future<String> constructVerificationUrl(String state, String location, String feedId,
-                                                    String provider, String providerId) {
-        Future<String> locationFuture = Future.future();
-
-        switch (provider.toUpperCase()) {
-            case INSTAGRAM:
-                String clientId = appConfig.getString("instaClientId");
-                String clientSecret = appConfig.getString("instaClientSecret");
-
-                InstagramService instagram = new InstagramAuthService()
-                        .apiKey(clientId)
-                        .apiSecret(clientSecret)
-                        .callback(callbackUrl.replace(":provider", "verification/providers/instagram"))
-                        .scope("basic")
-                        .build();
-
-                locationFuture.complete(instagram.getAuthorizationUrl() + "&state=" + state +
-                        "_PROVIDER_VERIFY_" + providerId + "_FEED_" + feedId);
-
-                break;
-            case FACEBOOK:
-                vertx.<String>executeBlocking(urlFuture -> {
-                    JsonObject config = vertx.getOrCreateContext().config();
-                    String appId = config.getString("faceBookAppId");
-                    String appSecret = config.getString("faceBookAppSecret");
-
-                    Facebook facebook = new FacebookFactory().getInstance();
-                    facebook.setOAuthAppId(appId, appSecret);
-                    facebook.setOAuthPermissions("manage_pages");
-
-                    urlFuture.complete(facebook.getOAuthAuthorizationURL(
-                            callbackUrl.replace(":provider", "verification/providers/facebook"), state +
-                                    "_PROVIDER_VERIFY_" + providerId + "_FEED_" + feedId));
-                }, false, urlResult -> {
-                    String url = urlResult.result();
-
-                    if (url != null && !url.isEmpty()) {
-                        locationFuture.complete(urlResult.result());
-                    } else {
-                        locationFuture.fail(new InternalError(location + "#code=500&error=Unknown"));
-                    }
-                });
-
-                break;
-            case YOUTUBE:
-                String authUrl = YOUTUBE_AUTH_URL.replace(":stateToken", state + "_PROVIDER_VERIFY_" +
-                        providerId + "_FEED_" + feedId);
-                locationFuture.complete(authUrl);
-
-                break;
-            default:
-                locationFuture.fail(location + "#code=400&error=Unknown");
-
-                break;
-        }
-
-        return locationFuture;
-    }
-
     private void getInstagramUrl(String state, String userRef, String location,
                                  Handler<AsyncResult<String>> resultHandler) {
         String finalState = state + "_forUser";
@@ -633,7 +541,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         }));
     }
 
-    private Future<Void> setState(String state, String location) {
+    protected Future<Void> setState(String state, String location) {
         Future<Void> voidFuture = Future.future();
 
         RedisUtils.performJedisWithRetry(redisClient, redis -> redis.set(state, location, setResults -> {
@@ -647,7 +555,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         return voidFuture;
     }
 
-    private Future<String> getLocation(RoutingContext routingContext, String state) {
+    protected Future<String> getLocation(RoutingContext routingContext, String state) {
         Future<String> locationFuture = Future.future();
 
         String location = routingContext.request().getParam("location");
@@ -664,7 +572,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         return locationFuture;
     }
 
-    private Future<String> getProvider(RoutingContext routingContext) {
+    protected Future<String> getProvider(RoutingContext routingContext) {
         Future<String> providerFuture = Future.future();
         String provider = routingContext.request().getParam("provider");
 
@@ -677,20 +585,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         return providerFuture;
     }
 
-    private Future<String> getProviderId(RoutingContext routingContext) {
-        Future<String> providerIdFuture = Future.future();
-        String providerId = routingContext.request().getParam("providerId");
-
-        if (providerId == null) {
-            providerIdFuture.fail(new IllegalArgumentException());
-        } else {
-            providerIdFuture.complete(providerId);
-        }
-
-        return providerIdFuture;
-    }
-
-    private Future<String> getUserState(RoutingContext routingContext) {
+    protected Future<String> getUserState(RoutingContext routingContext) {
         Future<String> stateFuture = Future.future();
         String stateParam = routingContext.request().getParam("state");
 
@@ -730,7 +625,7 @@ public class JWTGenerator implements Handler<RoutingContext> {
         return tokenContainerFuture;
     }
 
-    private void unAuthorized(RoutingContext routingContext) {
+    protected void unAuthorized(RoutingContext routingContext) {
         addLogMessageToRequestLog(routingContext, "Unauthorized!");
 
         routingContext.response().setStatusCode(302).putHeader("Location", CMS_ROOT +
