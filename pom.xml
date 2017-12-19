@@ -230,17 +230,25 @@
             <version>3.0.0</version>
         </dependency>
 
+        <!-- JWT -->
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.7.0</version>
         </dependency>
 
+        <!-- JWT -->
+
+        <!-- Google -->
+
         <dependency>
             <groupId>com.google.api-client</groupId>
             <artifactId>google-api-client</artifactId>
             <version>1.21.0</version>
         </dependency>
+
+        <!-- Google -->
 
         <!-- FaceBookProvider -->
 

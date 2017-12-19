@@ -20,37 +20,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  */
 
-package com.nannoq.tools.auth.services;
+package com.nannoq.tools.auth.services.providers.utils;
 
-import com.nannoq.tools.auth.models.AuthPackage;
-import com.nannoq.tools.auth.models.TokenContainer;
-import io.vertx.codegen.annotations.*;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-
-import javax.annotation.Nonnull;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.nannoq.tools.auth.models.UserProfile;
 
 /**
- * This class defines the AuthenticationService interface. It is used for creating JWTS and refreshing them.
+ * This class defines a google user as created from a google token.
  *
  * @author Anders Mikkelsen
- * @version 17.11.2017
+ * @version 13/11/17
  */
-@ProxyGen
-@VertxGen
-public interface AuthenticationService {
-    @Fluent
-    AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
-                                                @Nonnull Handler<AsyncResult<AuthPackage>> resultHandler);
+public class GoogleUser extends UserProfile {
+    public GoogleUser() {}
 
-    @Fluent
-    AuthenticationService refresh(@Nonnull String refreshToken,
-                                  @Nonnull Handler<AsyncResult<TokenContainer>> resultHandler);
-
-    @ProxyClose
-    void close();
-
+    public GoogleUser(GoogleIdToken.Payload payload) {
+        this.email = payload.getEmail();
+        this.name = payload.get("name") != null ? payload.get("name").toString() : "N/A";
+        this.givenName = payload.get("given_name") != null ? payload.get("given_name").toString() : "N/A";
+        this.familyName = payload.get("family_name") != null ? payload.get("family_name").toString() : "N/A";
+        this.pictureUrl = payload.get("picture") != null ? payload.get("picture").toString().replaceFirst("s96-c", "s400-c") : "N/A";
+        this.emailVerified = payload.getEmailVerified();
+    }
 }

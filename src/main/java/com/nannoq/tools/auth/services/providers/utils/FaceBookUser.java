@@ -20,37 +20,38 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  */
 
-package com.nannoq.tools.auth.services;
+package com.nannoq.tools.auth.services.providers.utils;
 
-import com.nannoq.tools.auth.models.AuthPackage;
-import com.nannoq.tools.auth.models.TokenContainer;
-import io.vertx.codegen.annotations.*;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-
-import javax.annotation.Nonnull;
+import com.nannoq.tools.auth.models.UserProfile;
+import com.nannoq.tools.repository.models.ModelUtils;
+import facebook4j.User;
 
 /**
- * This class defines the AuthenticationService interface. It is used for creating JWTS and refreshing them.
+ * This class defines a facebook user as created from a facebook token.
  *
  * @author Anders Mikkelsen
- * @version 17.11.2017
+ * @version 13/11/17
  */
-@ProxyGen
-@VertxGen
-public interface AuthenticationService {
-    @Fluent
-    AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
-                                                @Nonnull Handler<AsyncResult<AuthPackage>> resultHandler);
+public class FaceBookUser extends UserProfile {
+    public FaceBookUser() {}
 
-    @Fluent
-    AuthenticationService refresh(@Nonnull String refreshToken,
-                                  @Nonnull Handler<AsyncResult<TokenContainer>> resultHandler);
+    public FaceBookUser(User user) {
+        this.email = user.getEmail();
+        this.name = user.getName();
+        this.givenName = user.getFirstName();
+        this.familyName = user.getLastName();
+        this.pictureUrl = user.getPicture() != null ? user.getPicture().getURL().toString() : "N/A";
+        this.emailVerified = user.isVerified();
 
-    @ProxyClose
-    void close();
+        if (email == null || email.equalsIgnoreCase("")) {
+            generateFakeEmail(user);
+        }
+    }
 
+    private void generateFakeEmail(User user) {
+        this.email = ModelUtils.returnNewEtag(user.getId() != null ? user.getId().hashCode() :
+                name != null ? name.hashCode() : this.hashCode()) + "@facebook.notfound.com";
+    }
 }

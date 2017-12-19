@@ -20,37 +20,21 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  */
 
-package com.nannoq.tools.auth.services;
+package com.nannoq.tools.auth.services.providers;
 
-import com.nannoq.tools.auth.models.AuthPackage;
-import com.nannoq.tools.auth.models.TokenContainer;
-import io.vertx.codegen.annotations.*;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-
-import javax.annotation.Nonnull;
+import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 
 /**
- * This class defines the AuthenticationService interface. It is used for creating JWTS and refreshing them.
+ * Auth Provider interface
  *
  * @author Anders Mikkelsen
- * @version 17.11.2017
+ * @version 13/11/17
  */
-@ProxyGen
-@VertxGen
-public interface AuthenticationService {
-    @Fluent
-    AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
-                                                @Nonnull Handler<AsyncResult<AuthPackage>> resultHandler);
-
-    @Fluent
-    AuthenticationService refresh(@Nonnull String refreshToken,
-                                  @Nonnull Handler<AsyncResult<TokenContainer>> resultHandler);
-
-    @ProxyClose
-    void close();
-
+public interface Provider<T> {
+    void checkJWT(Vertx vertx, JsonObject appConfig, String token, Handler<AsyncResult<T>> resultHandler);
 }

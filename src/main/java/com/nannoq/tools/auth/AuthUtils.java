@@ -71,8 +71,8 @@ public class AuthUtils {
     private static final String USER_NOT_VERIFIED = "NOT_VERIFIED";
 
     private static final String AUTH_API_BASE = "AUTH";
-    private static final String AUTH_TOKEN_ENDPOINT = "/auth/api/oauth2/auth/convert";
-    private static final String AUTH_VERIFY_ENDPOINT = "/auth/api/oauth2/verify";
+    private final String AUTH_TOKEN_ENDPOINT;
+    private final String AUTH_VERIFY_ENDPOINT;
 
     private CircuitBreaker authAuthCircuitBreaker;
     private CircuitBreaker authVerifyCircuitBreaker;
@@ -85,13 +85,23 @@ public class AuthUtils {
 
     private static AuthUtils instance = null;
 
+
     private AuthUtils() {
-        vertx = Vertx.currentContext().owner();
+        this(Vertx.currentContext().config());
+    }
+
+    private AuthUtils(JsonObject appConfig) {
+        this(Vertx.currentContext().owner(), appConfig);
+    }
+    
+    private AuthUtils(Vertx vertx, JsonObject appConfig) {
+        this.vertx = vertx;
 
         logger.info("Initializing AuthUtils...");
 
-        JsonObject appConfig = vertx.getOrCreateContext().config();
         apiManager = new APIManager(vertx, appConfig);
+        AUTH_TOKEN_ENDPOINT = appConfig.getString("authTokenEndpoint");
+        AUTH_VERIFY_ENDPOINT = appConfig.getString("authVerifyEndpoint");
 
         prepareCircuitBreakers();
         prepareListeners();
