@@ -27,10 +27,9 @@ package com.nannoq.tools.auth.services;
 
 import com.nannoq.tools.auth.models.VerifyResult;
 import com.nannoq.tools.auth.utils.Authorization;
-import io.vertx.codegen.annotations.Fluent;
-import io.vertx.codegen.annotations.ProxyClose;
-import io.vertx.codegen.annotations.ProxyGen;
-import io.vertx.codegen.annotations.VertxGen;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.vertx.codegen.annotations.*;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -58,4 +57,5 @@ public interface VerificationService {
 
     @ProxyClose
     void close();
+
 }

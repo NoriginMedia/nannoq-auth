@@ -20,37 +20,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
  */
 
-package com.nannoq.tools.auth.services;
+package com.nannoq.tools.auth.services.providers.utils;
 
-import com.nannoq.tools.auth.models.AuthPackage;
-import com.nannoq.tools.auth.models.TokenContainer;
-import io.vertx.codegen.annotations.*;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-
-import javax.annotation.Nonnull;
+import com.nannoq.tools.auth.models.UserProfile;
+import org.jinstagram.entity.users.basicinfo.UserInfo;
 
 /**
- * This class defines the AuthenticationService interface. It is used for creating JWTS and refreshing them.
+ * This class defines a InstaGram user as created from an InstaGram token.
  *
  * @author Anders Mikkelsen
- * @version 17.11.2017
+ * @version 13/11/17
  */
-@ProxyGen
-@VertxGen
-public interface AuthenticationService {
-    @Fluent
-    AuthenticationService createJwtFromProvider(@Nonnull String token, @Nonnull String authProvider,
-                                                @Nonnull Handler<AsyncResult<AuthPackage>> resultHandler);
+public class InstaGramUser extends UserProfile {
+    public InstaGramUser() {}
 
-    @Fluent
-    AuthenticationService refresh(@Nonnull String refreshToken,
-                                  @Nonnull Handler<AsyncResult<TokenContainer>> resultHandler);
-
-    @ProxyClose
-    void close();
-
+    public InstaGramUser(UserInfo user) {
+        this.email = user.getData() != null ? user.getData().getUsername() : "N/A";
+        this.name = user.getData() != null ? user.getData().getFullName() : "N/A";
+        this.givenName = user.getData() != null ? user.getData().getFirstName() : "N/A";
+        this.familyName = user.getData() != null ? user.getData().getLastName() : "N/A";
+        this.pictureUrl = user.getData() != null ? user.getData().getProfilePicture() : "N/A";
+        this.emailVerified = true;
+    }
 }
