@@ -56,16 +56,48 @@ public class Google implements Provider<GoogleIdToken.Payload> {
     private static final Logger logger = LoggerFactory.getLogger(Google.class.getSimpleName());
     private List<String> CLIENT_IDS;
 
+    private final Vertx vertx;
+    private final JsonObject appConfig;
+    private GoogleIdTokenVerifier verifier;
+
+    public Google(Vertx vertx, JsonObject appConfig) {
+        this.vertx = vertx;
+        this.appConfig = appConfig;
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        HttpTransport transport;
+
+        try {
+            transport = GoogleNetHttpTransport.newTrustedTransport();
+            verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    .setAudience(CLIENT_IDS)
+                    .setIssuer("https://accounts.google.com")
+                    .build();
+        } catch (GeneralSecurityException | IOException e) {
+            logger.error(e);
+        }
+    }
+
     @Fluent
     public Google withClientIds(List<String> ids) {
         CLIENT_IDS = ids;
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        HttpTransport transport;
+
+        try {
+            transport = GoogleNetHttpTransport.newTrustedTransport();
+            verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                    .setAudience(CLIENT_IDS)
+                    .setIssuer("https://accounts.google.com")
+                    .build();
+        } catch (GeneralSecurityException | IOException e) {
+            logger.error(e);
+        }
 
         return this;
     }
 
     @Override
-    public void checkJWT(Vertx vertx, JsonObject appConfig, String jwt,
-                         Handler<AsyncResult<GoogleIdToken.Payload>> resultHandler) {
+    public void checkJWT(String jwt, Handler<AsyncResult<GoogleIdToken.Payload>> resultHandler) {
         vertx.<GoogleIdToken.Payload>executeBlocking(future -> {
             if (jwt == null) {
                 future.complete(null);
@@ -73,16 +105,6 @@ public class Google implements Provider<GoogleIdToken.Payload> {
                 GoogleIdToken idToken;
 
                 try {
-                    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-                    HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
-
-                    GoogleIdTokenVerifier verifier =
-                            new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-                                    .setAudience(CLIENT_IDS)
-                                    .setIssuer("https://accounts.google.com")
-                                    .build();
-
-
                     idToken = verifier.verify(jwt);
 
                     logger.info(idToken);

@@ -59,6 +59,10 @@ public class JWTReceiver implements Handler<RoutingContext> {
     private final VerificationService verifier;
     private final String AUTHORIZATION_TYPE_HEADER;
 
+    public JWTReceiver(VerificationService verifier) {
+        this(verifier, null);
+    }
+
     public JWTReceiver(VerificationService verifier, String AUTHORIZATION_TYPE_HEADER) {
         this.verifier = verifier;
 

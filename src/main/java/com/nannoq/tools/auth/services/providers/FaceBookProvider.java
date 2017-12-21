@@ -48,18 +48,27 @@ import static com.nannoq.tools.auth.services.AuthenticationServiceImpl.FACEBOOK;
 public class FaceBookProvider implements Provider<FaceBookUser> {
     private static final Logger logger = LoggerFactory.getLogger(FaceBookProvider.class.getSimpleName());
 
+    private final Vertx vertx;
+    private final JsonObject appConfig;
+    private final String appId;
+    private final String appSecret;
+    private final ConfigurationBuilder cb;
+
+    public FaceBookProvider(Vertx vertx, JsonObject appConfig) {
+        this.vertx = vertx;
+        this.appConfig = appConfig;
+        this.appId = appConfig.getString("faceBookAppId");
+        this.appSecret = appConfig.getString("faceBookAppSecret");
+        cb = new ConfigurationBuilder();
+        cb.setAppSecretProofEnabled(true);
+        cb.setOAuthAppId(appId);
+        cb.setOAuthAppSecret(appSecret);
+    }
+
     @Override
-    public void checkJWT(Vertx vertx, JsonObject appConfig, String token,
-                         Handler<AsyncResult<FaceBookUser>> resultHandler) {
+    public void checkJWT(String token, Handler<AsyncResult<FaceBookUser>> resultHandler) {
         vertx.<FaceBookUser>executeBlocking(future -> {
             AccessToken authToken = new AccessToken(token);
-            String appId = appConfig.getString("faceBookAppId");
-            String appSecret = appConfig.getString("faceBookAppSecret");
-
-            ConfigurationBuilder cb = new ConfigurationBuilder();
-            cb.setAppSecretProofEnabled(true);
-            cb.setOAuthAppId(appId);
-            cb.setOAuthAppSecret(appSecret);
             Facebook facebook = new FacebookFactory(cb.build()).getInstance();
             facebook.setOAuthPermissions("public_profile,email,user_friends");
             facebook.setOAuthAccessToken(authToken);
