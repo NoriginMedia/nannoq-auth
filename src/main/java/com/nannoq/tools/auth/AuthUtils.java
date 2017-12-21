@@ -71,8 +71,8 @@ public class AuthUtils {
     private static final String USER_NOT_VERIFIED = "NOT_VERIFIED";
 
     private static final String AUTH_API_BASE = "AUTH";
-    private final String AUTH_TOKEN_ENDPOINT;
-    private final String AUTH_VERIFY_ENDPOINT;
+    private String AUTH_TOKEN_ENDPOINT = "/auth/api/oauth2/auth/convert";
+    private String AUTH_VERIFY_ENDPOINT = "/auth/api/oauth2/verify";
 
     private CircuitBreaker authAuthCircuitBreaker;
     private CircuitBreaker authVerifyCircuitBreaker;
