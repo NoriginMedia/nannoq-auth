@@ -37,8 +37,8 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 /**
- * User: anders
- * Date: 19.12.17 13:25
+ * @author Anders Mikkelsen
+ * @version 19.12.2017
  */
 @RunWith(VertxUnitRunner.class)
 public class JWTGeneratorTest {
