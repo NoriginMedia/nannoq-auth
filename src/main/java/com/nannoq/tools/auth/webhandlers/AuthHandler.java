@@ -30,6 +30,7 @@ import com.nannoq.tools.auth.models.VerifyResult;
 import com.nannoq.tools.auth.utils.Authorization;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
@@ -92,15 +93,16 @@ public class AuthHandler implements Handler<RoutingContext> {
                 }
 
                 HttpServerRequest request = routingContext.request();
-                String feedId = routingContext.pathParam(domainIdentifier);
-                if (feedId == null) feedId = request.getParam("hash");
+                String domain = routingContext.pathParam(domainIdentifier);
                 Authorization authorization = new Authorization();
                 authorization.setMethod(request.rawMethod());
                 authorization.setModel(TYPE.getSimpleName());
-                authorization.setDomainIdentifier(feedId == null ? GLOBAL_AUTHORIZATION : feedId);
+                authorization.setDomainIdentifier(domain == null ? GLOBAL_AUTHORIZATION : domain);
 
                 authUtils.<VerifyResult>authenticateAndAuthorize(token, authorization, result -> {
                     if (result.failed()) {
+                        logger.error("Failure in Auth: " + Json.encodePrettily(authorization), result.cause());
+
                         addLogMessageToRequestLog(routingContext, "Unauthorized!", result.cause());
 
                         unAuthorized(routingContext, processStartTime);
