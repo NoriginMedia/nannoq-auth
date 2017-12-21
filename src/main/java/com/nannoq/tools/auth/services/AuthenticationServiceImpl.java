@@ -90,36 +90,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final String ISSUER;
     private final String AUDIENCE;
 
-    private final Vertx vertx;
-    private final JsonObject appConfig;
     private final RedisClient redisClient;
     private final String domainIdentifier;
     private final SecretKey SIGNING_KEY;
-    private final List<String> GOOGLE_CLIENT_IDS;
 
     private int notBeforeTimeInMinutes = -5;
     private int idTokenExpirationInDays = 5;
     private int refreshTokenExpirationInDays = 30;
 
     private Function<PermissionPack, Map<String, Object>> setPermissionOnClaims;
+    private final Google googleProvider;
+    private final FaceBookProvider facebookProvider;
+    private final InstaGram instaGramProvider;
 
     public AuthenticationServiceImpl(@Nonnull Vertx vertx, @Nonnull JsonObject appConfig,
                                      @Nonnull Function<PermissionPack, Map<String, Object>> permissionFunction,
                                      @Nonnull String KEY_BASE)
             throws InvalidKeyException, NoSuchAlgorithmException {
-        this.vertx = vertx;
-        this.appConfig = appConfig;
         this.redisClient = RedisUtils.getRedisClient(vertx, appConfig);
         this.domainIdentifier = appConfig.getString("domainIdentifier");
         this.setPermissionOnClaims = permissionFunction;
         this.SIGNING_KEY = new SecretKeySpec(DatatypeConverter.parseHexBinary(KEY_BASE), KEY_ALGORITHM);
         //noinspection unchecked
-        this.GOOGLE_CLIENT_IDS = appConfig.getJsonArray("gcmIds").getList();
+        List<String> GOOGLE_CLIENT_IDS = appConfig.getJsonArray("gcmIds").getList();
         this.EMAIL_HASH_KEY_BASE = appConfig.getString("emailHashKeybase");
         String CALL_BACK_PROVIDER_URL = appConfig.getString("callbackProviderUrl");
         this.CALLBACK_URL = appConfig.getString("callBackRoot") + CALL_BACK_PROVIDER_URL;
         this.ISSUER = appConfig.getString("authJWTIssuer");
         this.AUDIENCE = appConfig.getString("authJWTAudience");
+        this.googleProvider = new Google(vertx, appConfig);
+        this.googleProvider.withClientIds(GOOGLE_CLIENT_IDS);
+        this.facebookProvider = new FaceBookProvider(vertx, appConfig);
+        this.instaGramProvider = new InstaGram(vertx, appConfig, CALLBACK_URL);
 
         initializeKey(KEY_ALGORITHM);
     }
@@ -185,7 +187,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         switch (authProvider.toUpperCase()) {
             case GOOGLE:
-                new Google().withClientIds(GOOGLE_CLIENT_IDS).checkJWT(vertx, appConfig, token, result -> {
+                googleProvider.checkJWT(token, result -> {
                     if (result.failed()) {
                         logger.error("Unable to process Google Token!", result.cause());
 
@@ -197,7 +199,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 });
                 break;
             case FACEBOOK:
-                new FaceBookProvider().checkJWT(vertx, appConfig, token, result -> {
+                facebookProvider.checkJWT(token, result -> {
                     if (result.failed()) {
                         logger.error("Unable to process Facebook Token!", result.cause());
 
@@ -209,7 +211,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 });
                 break;
             case INSTAGRAM:
-                new InstaGram(CALLBACK_URL).checkJWT(vertx, appConfig, token, result -> {
+                instaGramProvider.checkJWT(token, result -> {
                     if (result.failed()) {
                         logger.error("Unable to process Instagram Token!", result.cause());
 

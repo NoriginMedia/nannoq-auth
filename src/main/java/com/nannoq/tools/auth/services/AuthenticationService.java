@@ -65,5 +65,4 @@ public interface AuthenticationService {
 
     @ProxyClose
     void close();
-
 }

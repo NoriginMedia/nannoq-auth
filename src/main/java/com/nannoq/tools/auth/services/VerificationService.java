@@ -82,5 +82,4 @@ public interface VerificationService {
 
     @ProxyClose
     void close();
-
 }

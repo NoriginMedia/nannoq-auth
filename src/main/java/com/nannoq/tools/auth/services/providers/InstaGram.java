@@ -48,26 +48,25 @@ import static com.nannoq.tools.auth.services.AuthenticationServiceImpl.INSTAGRAM
  * @version 13/11/17
  */
 public class InstaGram implements Provider<InstaGramUser> {
-    private final String callBackUrl;
+    private final Vertx vertx;
+    private final String clientSecret;
+    private final InstagramService instagramService;
 
-    public InstaGram(String callBackUrl) {
-        this.callBackUrl = callBackUrl.replace(":provider", "instagram");
+    public InstaGram(Vertx vertx, JsonObject appConfig, String callBackUrl) {
+        this.vertx = vertx;
+        String clientId = appConfig.getString("instaClientId");
+        this.clientSecret = appConfig.getString("instaClientSecret");
+        instagramService = new InstagramAuthService()
+                .apiKey(clientId)
+                .apiSecret(clientSecret)
+                .callback(callBackUrl)
+                .scope("basic public_content follower_list likes comments relationships")
+                .build();
     }
 
     @Override
-    public void checkJWT(Vertx vertx, JsonObject appConfig, String tokenString,
-                         Handler<AsyncResult<InstaGramUser>> resultHandler) {
+    public void checkJWT(String tokenString, Handler<AsyncResult<InstaGramUser>> resultHandler) {
         vertx.<InstaGramUser>executeBlocking(future -> {
-            String clientId = appConfig.getString("instaClientId");
-            String clientSecret = appConfig.getString("instaClientSecret");
-
-            InstagramService instagramService = new InstagramAuthService()
-                    .apiKey(clientId)
-                    .apiSecret(clientSecret)
-                    .callback(callBackUrl)
-                    .scope("basic public_content follower_list likes comments relationships")
-                    .build();
-
             Token token = instagramService.getAccessToken(new Verifier(tokenString));
             Instagram instagram = new Instagram(token.getToken(), clientSecret);
 

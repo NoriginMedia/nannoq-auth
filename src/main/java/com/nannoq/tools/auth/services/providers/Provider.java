@@ -36,5 +36,5 @@ import io.vertx.core.json.JsonObject;
  * @version 13/11/17
  */
 public interface Provider<T> {
-    void checkJWT(Vertx vertx, JsonObject appConfig, String token, Handler<AsyncResult<T>> resultHandler);
+    void checkJWT(String token, Handler<AsyncResult<T>> resultHandler);
 }
