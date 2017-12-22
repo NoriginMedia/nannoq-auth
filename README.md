@@ -2,6 +2,19 @@
 
 nannoq-auth is a collection of classes for managing JWT based authentication and authorization on a vertx environment.
 
+It supports:
+ - JWT Creation
+ - JWT Verification
+ - JWT Revocation
+ - OAuth Login
+ - Direct Token Conversion
+ 
+Current providers:
+ 
+ - Facebook
+ - Google
+ - Instagram
+ 
 ### Prerequisites
 
 Vert.x >= 3.5.0
@@ -9,6 +22,8 @@ Vert.x >= 3.5.0
 Java >= 1.8
 
 Maven
+
+Redis
 
 ## Installing
 
