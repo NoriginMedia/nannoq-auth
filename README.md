@@ -1,6 +1,6 @@
 # Nannoq Auth 
 
-[![Build Status](https://www.tomrom.net/buildStatus/icon?job=nannoq-auth/develop)](https://www.tomrom.net/job/nannoq-auth/job/develop/)
+[![Build Status](https://www.tomrom.net/buildStatus/icon?job=nannoq-tools/master)](https://www.tomrom.net/job/nannoq-tools/job/master/)
 
 nannoq-auth is a collection of classes for managing JWT based authentication and authorization on a vertx environment.
 
@@ -44,40 +44,18 @@ mvn clean verify -Dgpg.skip=true
 First install with either Maven:
 
 ```xml
-<repositories>
-    <repository>
-        <id>ossrh</id>
-        <name>OSSRH Snapshots</name>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-            <checksumPolicy>fail</checksumPolicy>
-        </snapshots>
-    </repository>
-</repositories>
-
 <dependency>
     <groupId>com.nannoq</groupId>
     <artifactId>auth</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```groovy
-repositories {
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
-}
-
 dependencies {
-    compile group: 'nannoq.com:auth:1.0.2-SNAPSHOT'
+    compile group: 'nannoq.com:auth:1.0.2'
 }
 ```
 
